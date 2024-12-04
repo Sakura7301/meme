@@ -116,7 +116,7 @@ class Meme(Plugin):
 
                 # 检查双人表情包
                 if clean_content in self.two_person_meme:
-                    sender_img = self.channel.get_head_img(msg.actual_user_id if e_context["context"]["isgroup"] else msg.from_user_id)
+                    sender_img = self.channel.get_head_img(msg.actual_user_id, msg.from_user_id)
                     if isinstance(sender_img, bytes):
                         meme_type = self.two_person_meme.get(clean_content)
                         self.generate_and_reply(e_context, meme_type, sender_img, head_img, two_person=True)
@@ -133,13 +133,13 @@ class Meme(Plugin):
 
         elif "随机表情" in content:
             meme_type = random.choice(list(self.trigger_to_meme.values()))
-            head_img = self.channel.get_head_img(msg.actual_user_id if e_context["context"]["isgroup"] else msg.from_user_id)
+            head_img = self.channel.get_head_img(msg.actual_user_id, msg.from_user_id)
             self.generate_and_reply(e_context, meme_type, head_img)
 
         meme_type = self.trigger_to_meme.get(content)
 
         if meme_type:
-            head_img = self.channel.get_head_img(msg.actual_user_id if e_context["context"]["isgroup"] else msg.from_user_id)
+            head_img = self.channel.get_head_img(msg.actual_user_id, msg.from_user_id)
             self.generate_and_reply(e_context, meme_type, head_img)
 
     def extract_at_users_from_content(self, content):
