@@ -19,7 +19,7 @@
 
    - `meme download`
 
-3. **配置文件**
+3. **配置文件（可选）**
 
    - 具体步骤前往[meme-generator](https://github.com/MeetWq/meme-generator/wiki/%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6)进行配置
 
@@ -33,7 +33,7 @@
 - `#installp https://github.com/WoodGoose/meme.git`
 - `#scanp`
 
-### 基础功能
+## 基础功能
 
 1. **单人表情包**
    - 输入 `配置文件中定义的触发词` - 生成发送人头像的表情包
@@ -47,7 +47,7 @@
 4. **表情列表**
    - 输入 `表情列表` - 获取双人表情跟单人表情的触发列表
 
-### 管理功能
+## 管理功能
 
 管理员可以通过以下命令控制表情包的使用：
 

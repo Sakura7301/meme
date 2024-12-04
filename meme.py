@@ -31,8 +31,8 @@ class Meme(Plugin):
             self.disabled_memes = {}  # 格式: {group_id: set(disabled_meme_types)}
             self.globally_disabled_memes = set()  # 全局禁用的表情类型
         except Exception as e:
-            logger.error(f"[Avatar] Initialization error: {e}")
-            raise "[Avatar] initialization failed, ignoring"
+            logger.error(f"[Meme] Initialization error: {e}")
+            raise "[Meme] initialization failed, ignoring"
 
         self.channel = None
         self.channel_type = conf().get("channel_type", "wx")
@@ -55,9 +55,9 @@ class Meme(Plugin):
                 config = json.load(f)
                 self.trigger_to_meme = config.get("one_PicEwo", {})
                 self.two_person_meme = config.get("two_PicEwo", {})
-            logger.info("[Avatar] Configuration loaded successfully.")
+            logger.info("[Meme] Configuration loaded successfully.")
         except Exception as e:
-            logger.error(f"[Avatar] Error loading configuration: {e}")
+            logger.error(f"[Meme] Error loading configuration: {e}")
             self.trigger_to_meme = {}
             self.two_person_meme = {}
 
@@ -138,25 +138,7 @@ class Meme(Plugin):
 
         meme_type = self.trigger_to_meme.get(content)
 
-        if not meme_type:
-            if content == "avatar":
-                head_img = self.channel.get_head_img(msg.actual_user_id if e_context["context"]["isgroup"] else msg.from_user_id)
-                self.reply_with_avatar(e_context, head_img)
-
-            elif content == "avatar22":
-                path_img = os.path.join(self.path, "xiao.gif")
-                try:
-                    with open(path_img, 'rb') as gif_file:
-                        gif_byte_arr = io.BytesIO(gif_file.read())
-                        gif_byte_arr.seek(0)
-                        reply = Reply(type=ReplyType.IMAGE, content=gif_byte_arr)
-                    e_context["reply"] = reply
-                except Exception as e:
-                    logger.error(f"Error reading GIF file: {e}")
-                    reply = Reply(type=ReplyType.TEXT, content="无法获取GIF图像！")
-                    e_context["reply"] = reply
-                e_context.action = EventAction.BREAK_PASS
-        else:
+        if meme_type:
             head_img = self.channel.get_head_img(msg.actual_user_id if e_context["context"]["isgroup"] else msg.from_user_id)
             self.generate_and_reply(e_context, meme_type, head_img)
 
@@ -192,23 +174,9 @@ class Meme(Plugin):
             reply.type = ReplyType.IMAGE
             reply.content = io.BytesIO(buf_gif.getvalue())
         except Exception as e:
-            logger.error(f"[Avatar] Meme generation error: {e}")
+            logger.error(f"[Meme] Meme generation error: {e}")
             reply.type = ReplyType.TEXT
             reply.content = "生成动图失败，请稍后重试！"
-
-        e_context["reply"] = reply
-        e_context.action = EventAction.BREAK_PASS
-
-    def reply_with_avatar(self, e_context, head_img):
-        reply = Reply()
-        if isinstance(head_img, bytes):
-            image_storage = io.BytesIO(head_img)
-            image_storage.seek(0)
-            reply.type = ReplyType.IMAGE
-            reply.content = image_storage
-        else:
-            reply.type = ReplyType.TEXT
-            reply.content = "获取头像失败！"
 
         e_context["reply"] = reply
         e_context.action = EventAction.BREAK_PASS
@@ -304,7 +272,7 @@ class Meme(Plugin):
         help_text = (
             "输入 '随机表情'，我会生成一个随机表情包。\n"
             "输入相应的触发词，我会为你生成一个动态头像效果。\n"
-            "在消息中@我，我会为被@用户制作表情包。\n"
+            "在消息中@用户，我会为被@用户制作表情包。\n"
             "输入 '表情列表' 来获取可用的单人和双人表情触发词。\n"
             "管理员命令：\n"
             "使用 '禁用表情 <表情名>' 或 '启用表情 <表情名>' 来控制当前群聊中的表情。\n"
