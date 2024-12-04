@@ -3,7 +3,11 @@
 
 ## 功能介绍
 
-这是一个用于[meme-generator](https://github.com/MeetWq/meme-generator)生成各种头像相关表情包的插件。支持制作单人表情包、双人表情包、随机表情包功能。
+这是一个用于[meme-generator](https://github.com/MeetWq/meme-generator)生成各种头像相关表情包的[cow](https://github.com/zhayujie/chatgpt-on-wechat)插件。支持制作单人表情包、双人表情包、随机表情包功能。
+
+**演示**
+
+![表情演示](images/演示.gif)
 
 ## 安装meme-generator
 
@@ -17,7 +21,7 @@
 
 3. **配置文件**
 
-   - 具体步骤前往[meme-generator](https://github.com/MeetWq/meme-generator/wiki/%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6)wiki进行配置
+   - 具体步骤前往[meme-generator](https://github.com/MeetWq/meme-generator/wiki/%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6)进行配置
 
 ## 在cow上面安装meme插件
 
@@ -39,6 +43,9 @@
 
 3. **双人表情包**
    - 输入 `撞@用户` - 使用发送者和被@用户的头像生成对应表情下的双人表情包
+  
+4. **表情列表**
+   - 输入 `表情列表` - 获取双人表情跟单人表情的触发列表
 
 ### 管理功能
 
