@@ -63,7 +63,7 @@
 
 插件使用 `config.json` 配置文件来定义表情包：
 
-```json
+```
 {
     "one_PicEwo": {
         "触发词1": "表情类型1",
@@ -84,6 +84,24 @@
 1. 管理员功能仅限于被设置为管理员的用户使用
 2. 群组控制命令仅在群聊中有效
 3. 管理员认证同[Godcmd插件](https://github.com/zhayujie/chatgpt-on-wechat/tree/master/plugins/godcmd)认证即可
+4. 因原本的itchat里面不支持发送GIF图，需修改lib/itchat/components/messages.py下的`def send_image(self, fileDir=None, toUserName=None, mediaId=None, file_=None)`
+
+```
+def send_image(self, fileDir=None, toUserName=None, mediaId=None, file_=None):
+    logger.debug('Request to send a image(mediaId: %s) to %s: %s' % (
+        mediaId, toUserName, fileDir))
+    if fileDir or file_:
+        flag_gif = False
+        if hasattr(fileDir, 'read'):
+            if fileDir.read(3) == b'GIF':
+                flag_gif = True
+            fileDir.seek(0)
+            file_, fileDir = fileDir, None
+        if fileDir is None:
+            fileDir = 'tmp.jpg'  # specific fileDir to send gifs
+        if flag_gif:
+            fileDir = 'tmp.gif'
+```
 
 ## 交流联系
 - 任何想法、建议、需求、咨询、BUG等，欢迎加入交流
