@@ -85,3 +85,8 @@
 2. 群组控制命令仅在群聊中有效
 3. 管理员认证同[Godcmd插件](https://github.com/zhayujie/chatgpt-on-wechat/tree/master/plugins/godcmd)认证即可
 
+## 交流联系
+- 任何想法、建议、需求、咨询、BUG等，欢迎加入交流
+- 如果您有任何改进意见或功能请求,请随时提交 Pull Request 或创建 Issue.
+
+![qr](images/qr.png)
