@@ -66,7 +66,7 @@ class Meme(Plugin):
             return
 
         content = e_context["context"].content
-        
+
         # 检查特定的命令以显示表情列表
         if content.strip() == "表情列表":
             self.send_meme_list(e_context)
@@ -79,9 +79,9 @@ class Meme(Plugin):
         # 检查表情是否被禁用
         msg = e_context["context"].kwargs.get("msg")
         group_id = msg.from_user_id if e_context["context"]["isgroup"] else None
-        
+
         clean_content = self.clean_at_users_from_content(content)
-        if (clean_content in self.globally_disabled_memes or 
+        if (clean_content in self.globally_disabled_memes or
             (group_id in self.disabled_memes and clean_content in self.disabled_memes[group_id])):
             return
 
@@ -184,6 +184,14 @@ class Meme(Plugin):
     def get_user_info_by_username(self, group_name, user_name):
         group_info = self.channel.search_chatrooms(None, group_name)
 
+        if group_info is None:
+            logger.error("group_info is None. Cannot proceed.")
+            return None
+
+        if "MemberList" not in group_info:
+            logger.error("MemberList not found in group_info.")
+            return None
+
         logger.debug(f"Searching for user '{user_name}' in the group.")
         for member in group_info["MemberList"]:
             logger.debug(f"Checking member: {member['DisplayName']} ({member['NickName']})")
@@ -202,7 +210,7 @@ class Meme(Plugin):
         """处理启用和禁用表情命令"""
         msg = e_context["context"].kwargs.get("msg")
         group_id = msg.from_user_id if e_context["context"]["isgroup"] else None
-        
+
         # 检查管理员权限
         if not self.is_admin_in_group(e_context["context"]):
             reply = Reply(ReplyType.TEXT, "只有管理员才有权执行此操作！")
@@ -216,7 +224,7 @@ class Meme(Plugin):
             return False
 
         is_global, action, meme_name = match.groups()
-        
+
         # 检查表情是否存在
         meme_type = self.trigger_to_meme.get(meme_name)
         if not meme_type and meme_name not in self.two_person_meme:
@@ -255,11 +263,11 @@ class Meme(Plugin):
         """整理和发送单人和双人表情的触发词列表."""
         single_meme_list = list(self.trigger_to_meme.keys())
         two_person_meme_list = list(self.two_person_meme.keys())
-        
+
         # 创建列表字符串
         response = "单人表情触发词:\n"
         response += "\n".join(single_meme_list) if single_meme_list else "没有单人表情触发词。\n"
-        
+
         response += "\n双人表情触发词:\n"
         response += "\n".join(two_person_meme_list) if two_person_meme_list else "没有双人表情触发词。"
 
