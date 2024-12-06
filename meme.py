@@ -89,6 +89,37 @@ class Meme(Plugin):
         mentioned_users = self.extract_at_users_from_content(content)
         logger.debug(f"Mentions found: {mentioned_users}")
 
+        # 新增逻辑: 检查是否是 "随机表情" 以及有无 @用户
+        if "随机表情" in content:
+            meme_type = random.choice(list(self.trigger_to_meme.values()))
+
+            # 如果有 "@用户"
+            if mentioned_users:
+                for username in mentioned_users:
+                    username = username.strip()
+                    user_info = self.get_user_info_by_username(msg.from_user_id, username)
+                    if user_info:
+                        head_img = self.channel.get_head_img(user_info['UserName'], msg.from_user_id)
+                    else:
+                        logger.error(f"User '{username}' not found.")
+                        reply = Reply(type=ReplyType.TEXT, content="无法获取被@用户的头像！")
+                        e_context["reply"] = reply
+                        e_context.action = EventAction.BREAK_PASS
+                        return
+
+                    if isinstance(head_img, bytes):
+                        self.generate_and_reply(e_context, meme_type, head_img)
+                    else:
+                        reply = Reply(type=ReplyType.TEXT, content="无法获取被@用户的头像！")
+                        e_context["reply"] = reply
+                        e_context.action = EventAction.BREAK_PASS
+                        return
+            else:
+                # 无 @用户，则使用发送者头像
+                head_img = self.channel.get_head_img(msg.actual_user_id, msg.from_user_id)
+                self.generate_and_reply(e_context, meme_type, head_img)
+            return
+
         if mentioned_users:
             for username in mentioned_users:
                 username = username.strip()
@@ -130,11 +161,6 @@ class Meme(Plugin):
                 else:
                     meme_type = self.trigger_to_meme.get(clean_content)
                     self.generate_and_reply(e_context, meme_type, head_img)
-
-        elif "随机表情" in content:
-            meme_type = random.choice(list(self.trigger_to_meme.values()))
-            head_img = self.channel.get_head_img(msg.actual_user_id, msg.from_user_id)
-            self.generate_and_reply(e_context, meme_type, head_img)
 
         meme_type = self.trigger_to_meme.get(content)
 
